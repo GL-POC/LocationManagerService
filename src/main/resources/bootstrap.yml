@@ -1,7 +1,20 @@
+server:
+  port: 9001
+
 spring:
-  cloud:
-    config:
-      enabled: true
-      discovery:
-        enabled: true
-        serviceId: central-config-server
+  application:
+    name: location-manager-service
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database:  lmsDb
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: false
+
+
