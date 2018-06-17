@@ -2,13 +2,16 @@ server:
   port: 9001
 
 spring:
+  cloud:
+    config:
+      uri: http://localhost:${config.port:8888}
   application:
     name: location-manager-service
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database:  lmsDb
+     host: localhost
+     port: 27017
+     database: lmsDb
 
 eureka:
   client:

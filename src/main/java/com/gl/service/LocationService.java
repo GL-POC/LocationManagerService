@@ -3,6 +3,7 @@ package com.gl.service;
 import com.gl.entity.Location;
 import com.gl.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
+@RefreshScope
 public class LocationService {
 
     @Autowired

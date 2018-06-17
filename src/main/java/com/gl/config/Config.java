@@ -1,6 +1,7 @@
 package com.gl.config;
 
 import com.mongodb.MongoClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
@@ -35,10 +36,13 @@ import java.io.IOException;
 public class Config {
 
 
+    @Value("${spring.data.mongodb.database:locationsDb}")
     private String db;
 
+    @Value("${spring.data.mongodb.host:127.0.0.1}")
     private String host;
 
+    @Value("${spring.data.mongodb.port:9999}")
     private String port;
 
     public String getDb() {
@@ -52,11 +56,10 @@ public class Config {
     public String getPort() {
         return port;
     }
-
     public @Bean
     MongoDbFactory mongoDbFactory() throws Exception {
 
-        return new SimpleMongoDbFactory(new MongoClient("localhost", 27017), "lmsDb");
+        return new SimpleMongoDbFactory(new MongoClient(getHost(), Integer.parseInt(getPort())), getDb());
     }
 
     public @Bean
@@ -74,7 +77,7 @@ public class Config {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.gl.controller"))
                 .paths(PathSelectors.any())
-                .build().apiInfo(new ApiInfo("Lacation management Service Api Documentation", "Documentation automatically generated", "1.1", null, new Contact("chethana", "localhost", "chethana.nk@globallogic.com"), null, null));
+                .build().apiInfo(new ApiInfo("Location management Service Api Documentation", "Documentation automatically generated", "1.1", null, new Contact("chethana", "localhost", "chethana.nk@globallogic.com"), null, null));
 
     }
 
