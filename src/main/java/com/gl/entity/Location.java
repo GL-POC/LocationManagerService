@@ -1,5 +1,6 @@
 package com.gl.entity;
 
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,6 +9,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 
 @Document(collection = "location")
+@Data
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class Location {
 
     @Id
@@ -15,36 +21,4 @@ public class Location {
     private String locationName;
     private int capacity;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getLocationName() {
-        return locationName;
-    }
-
-    public void setLocationName(String locationName) {
-        this.locationName = locationName;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    @Override
-    public String toString() {
-        return "Location{" +
-            "id=" + id +
-            ", locationName='" + locationName + '\'' +
-            ", capacity=" + capacity +
-            '}';
-    }
 }

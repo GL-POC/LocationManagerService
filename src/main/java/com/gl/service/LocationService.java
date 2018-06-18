@@ -2,37 +2,65 @@ package com.gl.service;
 
 import com.gl.entity.Location;
 import com.gl.repository.LocationRepository;
+import com.gl.request.LocationRequest;
+import com.gl.response.LocationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by chethana.nk on 29/3/18.
  */
 
 @Service
-@RefreshScope
+//@RefreshScope
 public class LocationService {
 
     @Autowired
     private LocationRepository locationRepository;
 
-    public Location getLocationById(String locationId) {
-        return locationRepository.getLocationById(locationId);
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true, rollbackFor = LocationNotFoundException.class)
+    public LocationResponse getLocationById(String locationId) {
+        Location location = locationRepository.getLocationById(locationId);
+        if(location != null){
+            return new LocationResponse(location.getId(),location.getLocationName(),location.getCapacity());
+        }
+        throw new LocationNotFoundException(locationId);
     }
 
-    public Location save(Location location){
-        return locationRepository.save(location);
+    public LocationResponse save(LocationRequest locationRequest){
+        Location locationToSave = new Location();
+        locationToSave.setCapacity(locationRequest.getCapacity());
+        locationRequest.setLocationName(locationRequest.getLocationName());
+        Location location = locationRepository.save(locationToSave);
+        if(location == null) {
+            throw new LocationException(locationRequest.getLocationName());
+        } else {
+            return  new LocationResponse(location.getId(),location.getLocationName(),location.getCapacity());
+        }
     }
 
     public void  deleteLocation(String locationId){
-        locationRepository.delete(locationId);
+        Location locationToDelete = locationRepository.getLocationById(locationId);
+        if(locationToDelete != null) {
+            locationRepository.deleteById(locationToDelete.getId());
+        } else {
+            throw new LocationNotFoundException(locationId);
+        }
+
     }
 
-    public Location updateLocationById(String locationId, Location location){
+    public LocationResponse updateLocationById(String locationId, LocationRequest locationRequest){
         Location locationById = locationRepository.getLocationById(locationId);
-        locationById.setLocationName(location.getLocationName());
-        locationById.setCapacity(location.getCapacity());
-        return locationRepository.save(locationById);
+        if(locationById!= null) {
+            locationById.setLocationName(locationRequest.getLocationName());
+            locationById.setCapacity(locationRequest.getCapacity());
+            Location response = locationRepository.save(locationById);
+            return new LocationResponse(response.getId(), response.getLocationName(), response.getCapacity());
+        }
+
+        throw new LocationException(locationId);
     }
 }
