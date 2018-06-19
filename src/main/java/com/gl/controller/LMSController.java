@@ -4,6 +4,8 @@ import com.gl.entity.Location;
 import com.gl.request.LocationRequest;
 import com.gl.response.LocationResponse;
 import com.gl.service.LocationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,8 @@ public class LMSController {
     @Autowired
     private LocationService locationService;
 
+	Logger logger = LoggerFactory.getLogger(LMSController.class);
+
     @GetMapping(value = "v1/locations/{locationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public LocationResponse getLocationById(@PathVariable String locationId){
         return locationService.getLocationById(locationId);
@@ -27,6 +31,7 @@ public class LMSController {
 
     @PostMapping(value = "v1/location", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public LocationResponse createLocation(@RequestBody LocationRequest locationRequest){
+		logger.info("New location being added {}", locationRequest);
         return locationService.save(locationRequest);
     }
 
